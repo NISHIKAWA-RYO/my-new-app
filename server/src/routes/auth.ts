@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { prisma } from "../prisma.js";
-// @ts-ignore
+import { prisma } from "../prisma";
 import bcrypt from "bcryptjs";
 
 const router = Router();
@@ -9,12 +8,14 @@ const router = Router();
 router.post("/register", async (req, res) => {
   const { email, password, name } = req.body || {};
   if (!email || !password || !name)
-    return res.status(400).json({
-      error: {
-        code: "BAD_REQUEST",
-        message: "email, password and name required",
-      },
-    });
+    return res
+      .status(400)
+      .json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "email, password and name required",
+        },
+      });
   try {
     const hash = bcrypt.hashSync(String(password), 10);
     const user = await prisma.user.create({
@@ -41,21 +42,27 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password)
-    return res.status(400).json({
-      error: { code: "BAD_REQUEST", message: "email and password required" },
-    });
+    return res
+      .status(400)
+      .json({
+        error: { code: "BAD_REQUEST", message: "email and password required" },
+      });
   const user = await prisma.user.findUnique({
     where: { email: String(email) },
   });
   if (!user)
-    return res.status(401).json({
-      error: { code: "UNAUTHORIZED", message: "invalid credentials" },
-    });
+    return res
+      .status(401)
+      .json({
+        error: { code: "UNAUTHORIZED", message: "invalid credentials" },
+      });
   const ok = bcrypt.compareSync(String(password), user.passwordHash);
   if (!ok)
-    return res.status(401).json({
-      error: { code: "UNAUTHORIZED", message: "invalid credentials" },
-    });
+    return res
+      .status(401)
+      .json({
+        error: { code: "UNAUTHORIZED", message: "invalid credentials" },
+      });
   (req.session as any).userId = user.id;
   res.json({ data: { id: user.id, email: user.email, name: user.name } });
 });

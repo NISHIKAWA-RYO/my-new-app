@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prisma } from "../prisma.js";
+import { prisma } from "../prisma";
 
 function getUserIdFromReq(req: any) {
   return (req.session && req.session.userId) || null;

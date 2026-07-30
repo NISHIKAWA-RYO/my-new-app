@@ -1,11 +1,11 @@
 import cors from "cors";
 import express from "express";
 import session from "express-session";
-import { healthHandler } from "./routes/health.js";
-import textbooksRouter from "./routes/textbooks.js";
-import transactionsRouter from "./routes/transactions.js";
-import facultiesRouter from "./routes/faculties.js";
-import authRouter from "./routes/auth.js";
+import { healthHandler } from "./routes/health";
+import textbooksRouter from "./routes/textbooks";
+import transactionsRouter from "./routes/transactions";
+import facultiesRouter from "./routes/faculties";
+import authRouter from "./routes/auth";
 
 export function createApp() {
   const app = express();

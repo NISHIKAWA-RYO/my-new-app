@@ -60,89 +60,91 @@ enum ReportStatus {
 }
 
 model Faculty {
-  id          String     @id @default(cuid())
-  nameJa      String     @unique
-  nameEn      String?    @unique
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  users       User[]
-  textbooks   Textbook[]
+  id        String     @id @default(cuid())
+  nameJa    String     @unique
+  nameEn    String?    @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  users     User[]
+  textbooks Textbook[]
 }
 
 model User {
-  id                  String           @id @default(cuid())
-  email               String           @unique
-  passwordHash        String           @map("password_hash")
-  name                String
-  facultyId           String?
-  penaltyPoints       Int              @default(0) @map("penalty_points")
-  preferredLanguage   Language         @default(ja) @map("preferred_language")
-  themeMode           ThemeMode        @default(light) @map("theme_mode")
-  emailVerifiedAt     DateTime?        @map("email_verified_at")
-  lastLoginAt         DateTime?        @map("last_login_at")
-  accountStatus       AccountStatus    @default(active) @map("account_status")
-  averageRating       Float            @default(0) @map("average_rating")
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  id                String        @id @default(cuid())
+  email             String        @unique
+  passwordHash      String        @map("password_hash")
+  name              String
+  facultyId         String?
+  penaltyPoints     Int           @default(0) @map("penalty_points")
+  preferredLanguage Language      @default(ja) @map("preferred_language")
+  themeMode         ThemeMode     @default(light) @map("theme_mode")
+  emailVerifiedAt   DateTime?     @map("email_verified_at")
+  lastLoginAt       DateTime?     @map("last_login_at")
+  accountStatus     AccountStatus @default(active) @map("account_status")
+  averageRating     Float         @default(0) @map("average_rating")
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
-  faculty             Faculty?         @relation(fields: [facultyId], references: [id], onDelete: SetNull)
-  textbooks           Textbook[]       @relation("SellerTextbooks")
-  favorites           Favorite[]
-  viewHistory         ViewHistory[]
-  bids                Bid[]
-  sentMessages        Message[]       @relation("SentMessages")
-  reviewsWritten      Review[]        @relation("ReviewsWritten")
-  reviewsReceived     Review[]        @relation("ReviewsReceived")
-  reportsFiled        Report[]        @relation("ReportsFiled")
-  reportsReceived     Report[]        @relation("ReportsReceived")
-  blocksGiven         Block[]         @relation("BlocksGiven")
-  blocksReceived      Block[]         @relation("BlocksReceived")
-  transactionsAsBuyer Transaction[]   @relation("BuyerTransactions")
-  transactionsAsSeller Transaction[]  @relation("SellerTransactions")
+  faculty              Faculty?         @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  textbooks            Textbook[]       @relation("SellerTextbooks")
+  favorites            Favorite[]
+  viewHistory          ViewHistory[]
+  bids                 Bid[]
+  sentMessages         Message[]        @relation("SentMessages")
+  reviewsWritten       Review[]         @relation("ReviewsWritten")
+  reviewsReceived      Review[]         @relation("ReviewsReceived")
+  reportsFiled         Report[]         @relation("ReportsFiled")
+  reportsReceived      Report[]         @relation("ReportsReceived")
+  blocksGiven          Block[]          @relation("BlocksGiven")
+  blocksReceived       Block[]          @relation("BlocksReceived")
+  transactionsAsBuyer  Transaction[]    @relation("BuyerTransactions")
+  transactionsAsSeller Transaction[]    @relation("SellerTransactions")
+  listingComments      ListingComment[]
 
   @@index([facultyId])
   @@index([accountStatus])
 }
 
 model SafetySpot {
-  id          String         @id @default(cuid())
-  nameJa      String         @unique
-  nameEn      String?
-  campus      String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id           String        @id @default(cuid())
+  nameJa       String        @unique
+  nameEn       String?
+  campus       String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   transactions Transaction[]
 }
 
 model Textbook {
-  id                String           @id @default(cuid())
-  sellerId          String
-  facultyId         String?
-  title             String
-  isbn              String?
-  description       String?
-  author            String?
-  publisher         String?
-  publicationYear   Int?
-  price             Int
-  currentPrice      Int?             @map("current_price")
-  saleFormat        SaleFormat       @map("sale_format")
-  auctionEndAt      DateTime?        @map("auction_end_at")
-  condition         BookCondition
-  status            TextbookStatus   @default(listed)
-  lectureName       String?          @map("lecture_name")
-  professorName     String?          @map("professor_name")
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
+  id              String         @id @default(cuid())
+  sellerId        String
+  facultyId       String?
+  title           String
+  isbn            String?
+  description     String?
+  author          String?
+  publisher       String?
+  publicationYear Int?
+  price           Int
+  currentPrice    Int?           @map("current_price")
+  saleFormat      SaleFormat     @map("sale_format")
+  auctionEndAt    DateTime?      @map("auction_end_at")
+  condition       BookCondition
+  status          TextbookStatus @default(listed)
+  lectureName     String?        @map("lecture_name")
+  professorName   String?        @map("professor_name")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
-  seller            User             @relation("SellerTextbooks", fields: [sellerId], references: [id], onDelete: Cascade)
-  faculty           Faculty?         @relation(fields: [facultyId], references: [id], onDelete: SetNull)
-  images            TextbookImage[]
-  favorites         Favorite[]
-  viewHistory       ViewHistory[]
-  comments          ListingComment[]
-  bids              Bid[]
-  transactions      Transaction[]
+  seller       User             @relation("SellerTextbooks", fields: [sellerId], references: [id], onDelete: Cascade)
+  faculty      Faculty?         @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  images       TextbookImage[]
+  favorites    Favorite[]
+  viewHistory  ViewHistory[]
+  comments     ListingComment[]
+  bids         Bid[]
+  transactions Transaction[]
+  reports      Report[]
 
   @@index([sellerId])
   @@index([facultyId])
@@ -154,93 +156,94 @@ model Textbook {
 }
 
 model TextbookImage {
-  id          String   @id @default(cuid())
-  textbookId  String
-  url         String
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  textbookId String
+  url        String
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now())
 
-  textbook    Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  textbook Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
 
   @@index([textbookId, sortOrder])
 }
 
 model Favorite {
-  id          String   @id @default(cuid())
-  userId      String
-  textbookId  String
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  textbookId String
+  createdAt  DateTime @default(now())
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  textbook    Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  textbook Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
 
   @@unique([userId, textbookId])
   @@index([textbookId])
 }
 
 model ViewHistory {
-  id          String   @id @default(cuid())
-  userId      String
-  textbookId  String
-  viewedAt    DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  textbookId String
+  viewedAt   DateTime @default(now())
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  textbook    Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  textbook Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
 
   @@index([userId, viewedAt])
   @@index([textbookId])
 }
 
 model ListingComment {
-  id          String   @id @default(cuid())
-  textbookId  String
-  userId      String
-  content     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  textbookId String
+  userId     String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  textbook    Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  textbook Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([textbookId, createdAt])
   @@index([userId])
 }
 
 model Bid {
-  id          String   @id @default(cuid())
-  textbookId  String
-  bidderId    String
-  amount      Int
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  textbookId String
+  bidderId   String
+  amount     Int
+  createdAt  DateTime @default(now())
 
-  textbook    Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
-  bidder      User     @relation(fields: [bidderId], references: [id], onDelete: Cascade)
+  textbook Textbook @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  bidder   User     @relation(fields: [bidderId], references: [id], onDelete: Cascade)
 
   @@index([textbookId, amount])
   @@index([bidderId])
 }
 
 model Transaction {
-  id              String           @id @default(cuid())
-  textbookId      String
-  buyerId         String
-  sellerId        String
-  safetySpotId    String?
-  noChangeAgreed  Boolean          @default(false) @map("no_change_agreed")
-  status          TransactionStatus @default(negotiating)
-  agreedPrice     Int?             @map("agreed_price")
-  scheduledAt     DateTime?
-  completedAt     DateTime?
-  cancelledAt     DateTime?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id             String            @id @default(cuid())
+  textbookId     String
+  buyerId        String
+  sellerId       String
+  safetySpotId   String?
+  noChangeAgreed Boolean           @default(false) @map("no_change_agreed")
+  status         TransactionStatus @default(negotiating)
+  agreedPrice    Int?              @map("agreed_price")
+  scheduledAt    DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
-  textbook        Textbook         @relation(fields: [textbookId], references: [id], onDelete: Cascade)
-  buyer           User             @relation("BuyerTransactions", fields: [buyerId], references: [id], onDelete: Cascade)
-  seller          User             @relation("SellerTransactions", fields: [sellerId], references: [id], onDelete: Cascade)
-  safetySpot      SafetySpot?      @relation(fields: [safetySpotId], references: [id], onDelete: SetNull)
-  messages        Message[]
-  reviews         Review[]
+  textbook   Textbook    @relation(fields: [textbookId], references: [id], onDelete: Cascade)
+  buyer      User        @relation("BuyerTransactions", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller     User        @relation("SellerTransactions", fields: [sellerId], references: [id], onDelete: Cascade)
+  safetySpot SafetySpot? @relation(fields: [safetySpotId], references: [id], onDelete: SetNull)
+  messages   Message[]
+  reviews    Review[]
+  reports    Report[]
 
   @@index([textbookId])
   @@index([buyerId])
@@ -250,32 +253,32 @@ model Transaction {
 }
 
 model Message {
-  id             String      @id @default(cuid())
-  transactionId   String
-  senderId        String
-  content         String
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id            String   @id @default(cuid())
+  transactionId String
+  senderId      String
+  content       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  transaction     Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  sender          User        @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  sender      User        @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
   @@index([transactionId, createdAt])
   @@index([senderId])
 }
 
 model Review {
-  id             String      @id @default(cuid())
-  transactionId  String
-  reviewerId     String
-  revieweeId     String
-  rating         Int
-  comment        String?
-  createdAt      DateTime    @default(now())
+  id            String   @id @default(cuid())
+  transactionId String
+  reviewerId    String
+  revieweeId    String
+  rating        Int
+  comment       String?
+  createdAt     DateTime @default(now())
 
-  transaction    Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  reviewer       User        @relation("ReviewsWritten", fields: [reviewerId], references: [id], onDelete: Cascade)
-  reviewee       User        @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  reviewer    User        @relation("ReviewsWritten", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewee    User        @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
 
   @@unique([transactionId, reviewerId])
   @@index([revieweeId])
@@ -283,20 +286,20 @@ model Review {
 }
 
 model Report {
-  id              String        @id @default(cuid())
-  reporterId      String
-  reportedUserId  String
-  relatedTextbookId String?
+  id                   String       @id @default(cuid())
+  reporterId           String
+  reportedUserId       String
+  relatedTextbookId    String?
   relatedTransactionId String?
-  reason          String
-  detail          String?
-  status          ReportStatus  @default(pending)
-  createdAt       DateTime      @default(now())
-  resolvedAt      DateTime?
+  reason               String
+  detail               String?
+  status               ReportStatus @default(pending)
+  createdAt            DateTime     @default(now())
+  resolvedAt           DateTime?
 
-  reporter        User          @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
-  reportedUser    User          @relation("ReportsReceived", fields: [reportedUserId], references: [id], onDelete: Cascade)
-  relatedTextbook Textbook?     @relation(fields: [relatedTextbookId], references: [id], onDelete: SetNull)
+  reporter           User         @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser       User         @relation("ReportsReceived", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  relatedTextbook    Textbook?    @relation(fields: [relatedTextbookId], references: [id], onDelete: SetNull)
   relatedTransaction Transaction? @relation(fields: [relatedTransactionId], references: [id], onDelete: SetNull)
 
   @@index([reporterId, createdAt])
@@ -304,13 +307,13 @@ model Report {
 }
 
 model Block {
-  id          String   @id @default(cuid())
-  blockerId   String
-  blockedId   String
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
 
-  blocker     User     @relation("BlocksGiven", fields: [blockerId], references: [id], onDelete: Cascade)
-  blocked     User     @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+  blocker User @relation("BlocksGiven", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
 
   @@unique([blockerId, blockedId])
   @@index([blockedId])
