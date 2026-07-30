@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prisma } from "../prisma";
+import { prisma } from "../prisma.js";
 
 const router = Router();
 
@@ -118,7 +118,7 @@ router.patch("/:id/status", async (req, res) => {
       .json({ error: { code: "BAD_REQUEST", message: "invalid status" } });
   const updated = await prisma.transaction.update({
     where: { id: tx.id },
-    data: { status },
+    data: { status: status as any },
   });
   const viewerId = userId;
   const viewerIsBuyer = viewerId === updated.buyerId;
