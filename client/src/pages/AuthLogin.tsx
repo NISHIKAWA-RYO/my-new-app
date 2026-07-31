@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function AuthLogin() {
   const nav = useNavigate();
@@ -66,3 +67,13 @@ export default function AuthLogin() {
     </main>
   );
 }
+
+// ログインフォームのjsxの中に追記
+<div className="mt-4 text-center">
+  <p className="text-sm">
+    アカウントをお持ちでないですか？{" "}
+    <Link to="/register" className="text-blue-500 underline font-bold">
+      新規会員登録はこちら
+    </Link>
+  </p>
+</div>;
