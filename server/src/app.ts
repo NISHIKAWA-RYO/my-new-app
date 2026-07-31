@@ -1,11 +1,17 @@
+import express, { Request, Response } from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import cors from "cors";
-import express from "express";
 import session from "express-session";
 import { healthHandler } from "./routes/health";
 import textbooksRouter from "./routes/textbooks";
 import transactionsRouter from "./routes/transactions";
 import facultiesRouter from "./routes/faculties";
 import authRouter from "./routes/auth";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const buildPath = path.join(__dirname, "../../client/dist");
 
 export function createApp() {
   const app = express();
@@ -74,6 +80,15 @@ export function createApp() {
       });
     },
   );
+
+  // 静的ファイルを配信する設定
+  app.use(express.static(buildPath));
+
+  // どんなURLにアクセスされても index.html を返す（型を指定してエラーを消すのじゃ！）
+  app.get("*", (req: Request, res: Response) => {
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
+  // --- ここまで ---
 
   return app;
 }

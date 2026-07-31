@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -10,7 +12,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["client/src/*"]
     },
