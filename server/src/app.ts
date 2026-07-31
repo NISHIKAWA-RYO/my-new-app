@@ -3,15 +3,17 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import session from "express-session";
-import { healthHandler } from "./routes/health";
-import textbooksRouter from "./routes/textbooks";
-import transactionsRouter from "./routes/transactions";
-import facultiesRouter from "./routes/faculties";
-import authRouter from "./routes/auth";
+// 【修正】相対パスのインポートには .js を付けるのじゃぞ
+import { healthHandler } from "./routes/health.js";
+import textbooksRouter from "./routes/textbooks.js";
+import transactionsRouter from "./routes/transactions.js";
+import facultiesRouter from "./routes/faculties.js";
+import authRouter from "./routes/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const buildPath = path.join(__dirname, "../../client/dist");
+// 【重要】ビルドログに合わせてパスを ../../dist/client に修正したぞ
+const buildPath = path.join(__dirname, "../../dist/client");
 
 export function createApp() {
   const app = express();
@@ -36,7 +38,6 @@ export function createApp() {
     }),
   );
 
-  // Ensure a simple userId on session for demo purposes
   app.use((req, _res, next) => {
     try {
       const s = req.session as any;
@@ -49,21 +50,23 @@ export function createApp() {
     next();
   });
 
+  // 1. まずは API の設定じゃ
   app.get("/api/health", healthHandler);
   app.use("/api/textbooks", textbooksRouter);
   app.use("/api/transactions", transactionsRouter);
   app.use("/api/faculties", facultiesRouter);
   app.use("/api/auth", authRouter);
 
-  app.use((_req, res) => {
-    res.status(404).json({
-      error: {
-        code: "NOT_FOUND",
-        message: "Route not found",
-      },
-    });
+  // 2. 次に「静的ファイル（React）」の設定をここに持ってくるのじゃ！
+  app.use(express.static(buildPath));
+
+  // 3. どの API にも当てはまらなければ、React の画面を返すのじゃ
+  app.get("*any", (req: Request, res: Response) => {
+    res.sendFile(path.join(buildPath, "index.html"));
   });
 
+  // 4. 最後にエラーハンドリングじゃ
+  // (以前ここにいた 404 ハンドラーは *any とぶつかるので削除したぞい)
   app.use(
     (
       err: unknown,
@@ -80,15 +83,6 @@ export function createApp() {
       });
     },
   );
-
-  // 静的ファイルを配信する設定
-  app.use(express.static(buildPath));
-
-  // どんなURLにアクセスされても index.html を返す（型を指定してエラーを消すのじゃ！）
-  app.get("*any", (req: Request, res: Response) => {
-    res.sendFile(path.join(buildPath, "index.html"));
-  });
-  // --- ここまで ---
 
   return app;
 }
