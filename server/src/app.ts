@@ -85,7 +85,7 @@ export function createApp() {
   app.use(express.static(buildPath));
 
   // どんなURLにアクセスされても index.html を返す（型を指定してエラーを消すのじゃ！）
-  app.get("(.*)", (req: Request, res: Response) => {
+  app.get("*any", (req: Request, res: Response) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
   // --- ここまで ---
